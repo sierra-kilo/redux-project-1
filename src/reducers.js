@@ -7,9 +7,15 @@ import {
   VisibilityFilters
 } from './actions'
 
-const initialState = {
-  visibilitFilter: VisibilityFilters.SHOW_ALL,
-  todos: []
+const { SHOW_ALL } = VisibilityFilters
+
+function visibilitFilter(state = SHOW_ALL, action) {
+  switch (action.type) {
+    case SET_VISIBILITY_FILTER:
+      return action.filter
+    default:
+      return state
+  }
 }
 
 // state = default
@@ -23,6 +29,16 @@ function todos(state = [], action) {
         completed: false
       }
     ]
+    // case REMOVE_TODO:
+    //   return {
+    //     state.filter((todo, index) => {
+    //       if(index !== action.index) {
+    //         return {
+    //             todo
+    //         }
+    //       }
+    //     })
+    //   }
     case TOGGLE_TODO:
       return state.map((todo, index) => {
         if(index === action.index) {
@@ -38,27 +54,19 @@ function todos(state = [], action) {
   }
 }
 
-function todoApp(state = initialState, action) {
-  // state = initialState sets a default value for state
-  switch(action.type) {
-    case SET_VISIBILITY_FILTER:
-      return {
-        // using spread operator to change visibility filter in state
-        ...state,
-        visibilitFilter: action.filter
-      }
-    case ADD_TODO:
-      return {
-        // using spread operator to add new object to state.todos
-        ...state,
-        todos: todos(state.todos, action)
-      }
-    case TOGGLE_TODO:
-      return {
-        ...state,
-        todos: todos(state.todos, action)
-      }
-    default:
-      return state
-  }
-}
+// function todoApp(state = {}, action) {
+//   return {
+//     visibilitFilter: visibilitFilter(state.visibilitFilter, action),
+//     todos: todos(state.todos, action)
+//   }
+// }
+
+
+
+// wow so much magic here! I don't like it, even though they say there is no magic here...
+const todoApp = combineReducers({
+  visibilityFilter,
+  todos
+})
+
+export default todoApp
